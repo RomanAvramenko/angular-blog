@@ -1,35 +1,73 @@
 import { FbAuthResponse } from './../../../shared/components/interfaces';
 import { environment } from './../../../../environments/environment';
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { User } from 'src/app/shared/components/interfaces';
-import { Observable } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { Observable, throwError, Subject } from 'rxjs';
+import { tap, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
+  public errors$: Subject<string> = new Subject<string>();
+
   constructor(private http: HttpClient) {}
 
   get token(): string {
-    return '';
+    const expDate = new Date(localStorage.getItem('fbase-token-exp'));
+    if (new Date() > expDate) {
+      this.logout();
+      return null;
+    }
+    return localStorage.getItem('fbase-token');
   }
 
   login(user: User): Observable<any> {
+    user.returnSecureToken = true;
     return this.http
       .post(
         `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.apiKey}`,
         user
       )
-      .pipe(tap(this.setToken));
+      .pipe(tap(this.setToken), catchError(this.handleError.bind(this)));
   }
 
-  logout() {}
+  logout() {
+    this.setToken(null);
+  }
 
   isAuthenticated(): boolean {
     return !!this.token;
   }
 
-  private setToken(response: FbAuthResponse) {
-    console.log(response);
+  private handleError(error: HttpErrorResponse) {
+    const { message } = error.error.error;
+
+    switch (message) {
+      case 'INVALID_EMAIL':
+        this.errors$.next('Incorect email');
+        break;
+      case 'INVALID_PASSWORD':
+        this.errors$.next('Incorect password');
+        break;
+      case 'EMAIL_NOT_FOUND':
+        this.errors$.next('This email is not exist');
+        break;
+      default:
+        break;
+    }
+
+    return throwError(error);
+  }
+
+  private setToken(response: FbAuthResponse | null) {
+    if (response) {
+      const expDate = new Date(
+        new Date().getTime() + +response.expiresIn * 1000
+      );
+      localStorage.setItem('fbase-token', response.idToken);
+      localStorage.setItem('fbase-token-exp', expDate.toString());
+    } else {
+      localStorage.clear();
+    }
   }
 }
