@@ -1,3 +1,4 @@
+import { SearchPipe } from './shared/search.pipe';
 import { AuthGuard } from './shared/services/auth.guard';
 import { LoginPageComponent } from './login-page/login-page.component';
 import { AdminLayoutComponent } from './shared/components/admin-layout/admin-layout.component';
@@ -17,6 +18,7 @@ import { SharedModule } from '../shared/shared.module';
     DashboardPageComponent,
     CreatePageComponent,
     EditPageComponent,
+    SearchPipe
   ],
   imports: [
     CommonModule,
