@@ -6,7 +6,7 @@ import { User } from 'src/app/shared/components/interfaces';
 import { Observable, throwError, Subject } from 'rxjs';
 import { tap, catchError } from 'rxjs/operators';
 
-@Injectable()
+@Injectable({providedIn: 'root'})
 export class AuthService {
   public errors$: Subject<string> = new Subject<string>();
 
