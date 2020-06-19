@@ -1,4 +1,4 @@
-import { catchError, tap } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 import { Injectable } from '@angular/core';
 import {
   HttpInterceptor,
@@ -13,7 +13,12 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService, 
+    private router: Router
+    ) {
+
+    }
 
   intercept(
     req: HttpRequest<any>,

@@ -1,3 +1,4 @@
+import { AlertService } from './../shared/services/alert.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { PostService } from './../../shared/post.service';
 import { Component, OnInit, OnDestroy } from '@angular/core';
@@ -20,7 +21,8 @@ export class EditPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private route: ActivatedRoute,
-    private postsService: PostService
+    private postsService: PostService,
+    private alert: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -60,6 +62,7 @@ export class EditPageComponent implements OnInit, OnDestroy {
       })
       .subscribe(() => {
         this.submitted = false;
+        this.alert.success('Post was renew')
       });
   }
 }

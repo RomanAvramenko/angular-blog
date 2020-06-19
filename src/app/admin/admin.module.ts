@@ -1,3 +1,4 @@
+import { AlertService } from './shared/services/alert.service';
 import { SearchPipe } from './shared/search.pipe';
 import { AuthGuard } from './shared/services/auth.guard';
 import { LoginPageComponent } from './login-page/login-page.component';
@@ -10,6 +11,7 @@ import { CreatePageComponent } from './create-page/create-page.component';
 import { EditPageComponent } from './edit-page/edit-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
+import { AlertComponent } from './shared/components/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +20,8 @@ import { SharedModule } from '../shared/shared.module';
     DashboardPageComponent,
     CreatePageComponent,
     EditPageComponent,
-    SearchPipe
+    SearchPipe,
+    AlertComponent,
   ],
   imports: [
     CommonModule,
@@ -52,6 +55,6 @@ import { SharedModule } from '../shared/shared.module';
     ]),
   ],
   exports: [RouterModule],
-  providers: [AuthGuard],
+  providers: [AuthGuard, AlertService],
 })
 export class AdminModule {}
